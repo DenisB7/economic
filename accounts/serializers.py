@@ -10,16 +10,16 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username", "email", "gender", "age", "country", "city"]
+        fields = ("id", "username", "email", "gender", "age", "country", "city")
 
 
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = Country
-        fields = ["id", "name"]
+        fields = ("id", "name")
 
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = ["id", "name", "country"]
+        fields = ("id", "name", "country")
