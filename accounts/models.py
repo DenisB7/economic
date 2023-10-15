@@ -23,12 +23,20 @@ class UserCustom(AbstractUser):
     When you will have new model which you will need to link with User model,
     please don't use standard User model for ForeignKey, since we modified it, take it from settings.py.
 
-    Check example below:
-
+    Check examples below:
+    1. AUTH_USER_MODEL
     from trial_assignment.settings import AUTH_USER_MODEL
 
     class AnotherModel(models.Model):
         user = models.ForeignKey(AUTH_USER_MODEL, ...)
+
+    2. get_user_model()
+    from django.contrib.auth import get_user_model
+
+    User = get_user_model()
+
+    class AnotherModel(models.Model):
+        user = models.ForeignKey(User, ...)
     """
 
     GENDERS = (
