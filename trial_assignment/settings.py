@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
-
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_yasg",
     "accounts",
-    "cities_light",
 ]
 
 MIDDLEWARE = [
@@ -82,7 +81,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-        'ATOMIC_REQUESTS': True,
+        "ATOMIC_REQUESTS": True,
     }
 }
 
@@ -132,6 +131,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # custom user settings
 AUTH_USER_MODEL = "accounts.UserCustom"
+
+# JWT settings
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ],
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+}
 
 # user-agent setting for APIs
 USER_AGENT = (
