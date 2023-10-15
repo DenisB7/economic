@@ -11,7 +11,9 @@ class Country(models.Model):
 
 class City(models.Model):
     name = models.CharField(max_length=300)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="cities")
+    country = models.ForeignKey(
+        Country, on_delete=models.CASCADE, related_name="cities"
+    )
 
     def __str__(self):
         return self.name
@@ -47,8 +49,12 @@ class UserCustom(AbstractUser):
 
     gender = models.CharField(max_length=30, choices=GENDERS)
     age = models.PositiveIntegerField(null=True)
-    country = models.ForeignKey(Country, on_delete=models.SET_NULL, related_name="users_custom", null=True)
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, related_name="users_custom", null=True)
+    country = models.ForeignKey(
+        Country, on_delete=models.SET_NULL, related_name="users_custom", null=True
+    )
+    city = models.ForeignKey(
+        City, on_delete=models.SET_NULL, related_name="users_custom", null=True
+    )
 
     def __str__(self):
         return f"USERNAME: {self.username} EMAIL: {self.email}"
