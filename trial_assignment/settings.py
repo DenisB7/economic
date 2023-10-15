@@ -131,22 +131,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # custom user settings
 AUTH_USER_MODEL = "accounts.UserCustom"
-
-# django-cities-light settings
-COUNTRY_SOURCES = [
-    {
-        "name": "geonames",
-        "url": "http://download.geonames.org/export/dump/EU.zip",
-    },
-]
-
-CITY_SOURCES = [
-    {
-        "name": "geonames",
-        "url": "http://download.geonames.org/export/dump/EU.zip",
-        "country_file": "countryInfo.txt",
-        "city_file": "cities1000.zip",
-        "city_filter": lambda city: city.population >= 547000,
-        "country_filter": lambda country: country.in_europe,
-    },
-]
