@@ -1,6 +1,20 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from cities_light.models import Country, City
+
+
+class Country(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class City(models.Model):
+    name = models.CharField(max_length=300)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="cities")
+
+    def __str__(self):
+        return self.name
 
 
 class UserCustom(AbstractUser):
@@ -25,8 +39,8 @@ class UserCustom(AbstractUser):
 
     gender = models.CharField(max_length=30, choices=GENDERS)
     age = models.PositiveIntegerField(null=True)
-    country = models.ForeignKey(Country, on_delete=models.SET_NULL, null=True, related_name="users_custom")
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, related_name="users_custom")
+    country = models.ForeignKey(Country, on_delete=models.SET_NULL, related_name="users_custom", null=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, related_name="users_custom", null=True)
 
     def __str__(self):
         return f"USERNAME: {self.username} EMAIL: {self.email}"
