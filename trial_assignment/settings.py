@@ -82,6 +82,7 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -131,3 +132,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # custom user settings
 AUTH_USER_MODEL = "accounts.UserCustom"
+
+# user-agent setting for APIs
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    + "AppleWebKit/537.36 (KHTML, like Gecko) "
+    + "Chrome/58.0.3029.110 Safari/537.3"
+)
+
+# base urls for APIs
+OPENDATASOFT_BASE_URL = "https://public.opendatasoft.com"
