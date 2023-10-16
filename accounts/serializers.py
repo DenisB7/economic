@@ -49,3 +49,7 @@ class TokenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Token
         fields = ("key",)
+
+
+class CustomLogoutSerializer(serializers.Serializer):
+    pass  # add your fields and validation logic here

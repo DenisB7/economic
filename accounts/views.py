@@ -5,9 +5,11 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+
 from accounts.models import Country
 from accounts.serializers import (
     CountrySerializer,
+    CustomLogoutSerializer,
     TokenSerializer,
     UserSerializer,
 )
@@ -55,6 +57,7 @@ class LoginView(generics.GenericAPIView):
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = CustomLogoutSerializer
 
     def get(self, request):
         logout(request)
