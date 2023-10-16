@@ -43,7 +43,7 @@ class LogoutView(generics.GenericAPIView):
 
     def get(self, request):
         """This method is used to logout user."""
-        
+
         # Blacklist the refresh token
         refresh_token = request.COOKIES.get("refresh")
         if refresh_token:
