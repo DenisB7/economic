@@ -22,15 +22,15 @@ User = get_user_model()
 class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    authentication_classes = [JWTAuthentication]
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
 
 
 class CountryListView(generics.ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    authentication_classes = [JWTAuthentication]
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
 
 
 class LoginView(TokenObtainPairView):
@@ -38,8 +38,8 @@ class LoginView(TokenObtainPairView):
 
 
 class LogoutView(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    authentication_classes = [JWTAuthentication]
+    permission_classes = (IsAuthenticated,)
+    authentication_classes = (JWTAuthentication,)
 
     def get(self, request):
         """This method is used to logout user."""
