@@ -51,9 +51,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token = super().get_token(user)
 
-        # Add custom claims
         token["email"] = user.email
-        token["password"] = user.password
+        token["password"] = "password"
 
         return token
 
@@ -62,10 +61,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         data = super().validate(attrs)
 
-        data["payload"] = {
-            "email": self.user.email,
-            "password": self.initial_data["password"],
-        }
         data["token"] = data["access"]
         del data["refresh"]
         del data["access"]
