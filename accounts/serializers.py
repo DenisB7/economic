@@ -52,4 +52,4 @@ class TokenSerializer(serializers.ModelSerializer):
 
 
 class CustomLogoutSerializer(serializers.Serializer):
-    pass  # add your fields and validation logic here
+    pass
