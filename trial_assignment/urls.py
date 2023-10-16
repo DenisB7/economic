@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import include, path
 
 from accounts import urls as accounts_urls
+from sales import urls as sales_urls
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("accounts/", include(accounts_urls)),
+    path("", include(accounts_urls)),
+    path("", include(sales_urls)),
 ]
