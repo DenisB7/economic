@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.authtoken.models import Token
 
 from accounts.models import Country, City
 
@@ -28,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
-        fields = ("id", "name", "country")
+        fields = ("id", "name")
 
 
 class CountrySerializer(serializers.ModelSerializer):
@@ -45,25 +45,7 @@ class CountrySerializer(serializers.ModelSerializer):
         return CitySerializer(cities, many=True).data
 
 
-class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    def get_token(cls, user):
-        """This method is used to get token for user."""
-
-        token = super().get_token(user)
-
-        token["email"] = user.email
-        token["password"] = "password"
-
-        return token
-
-    def validate(self, attrs):
-        """This method is used to validate data from request."""
-
-        data = super().validate(attrs)
-
-        data["token"] = data["access"]
-        del data["refresh"]
-        del data["access"]
-        data["user_id"] = self.user.id
-
-        return data
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = ("key",)

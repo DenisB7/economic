@@ -1,17 +1,14 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, login, logout, get_user_model
 
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
 
 from accounts.models import Country
 from accounts.serializers import (
     CountrySerializer,
-    CustomTokenObtainPairSerializer,
+    TokenSerializer,
     UserSerializer,
 )
 
@@ -23,36 +20,44 @@ class UserRetrieveUpdateView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JWTAuthentication,)
 
 
 class CountryListView(generics.ListAPIView):
     queryset = Country.objects.all()
     serializer_class = CountrySerializer
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JWTAuthentication,)
 
 
-class LoginView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+class LoginView(generics.GenericAPIView):
+    serializer_class = TokenSerializer
+
+    def post(self, request):
+        email = request.data.get("email")
+        password = request.data.get("password")
+        user = authenticate(request, email=email, password=password)
+        if not user:
+            return Response(
+                {"detail": "Invalid credentials"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        login(request, user)
+        token, created = Token.objects.get_or_create(user=user)
+        serializer = self.get_serializer(instance=token)
+        return Response(
+            {
+                "token": serializer.data["key"],
+                "user_id": user.id,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class LogoutView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
-    authentication_classes = (JWTAuthentication,)
 
     def get(self, request):
-        """This method is used to logout user."""
-
-        # Blacklist the refresh token
-        refresh_token = request.COOKIES.get("refresh")
-        if refresh_token:
-            try:
-                RefreshToken(refresh_token).blacklist()
-            except TokenError:
-                return Response(
-                    {"detail": "Invalid token"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-        return Response(status=status.HTTP_200_OK)
+        logout(request)
+        response = Response(status=status.HTTP_200_OK)
+        response.delete_cookie("sessionid")
+        return response
