@@ -11,6 +11,8 @@ from sales.models import Sale
 
 @pytest.fixture
 def user():
+    """Create a user object."""
+
     return get_user_model().objects.create_user(
         username="testuser",
         email="testuser@example.com",
@@ -20,6 +22,8 @@ def user():
 
 @pytest.fixture
 def sale(user):
+    """Create a sale object."""
+
     return Sale.objects.create(
         date="2022-01-01",
         product="Test Product",
@@ -31,6 +35,8 @@ def sale(user):
 
 @pytest.fixture
 def api_client(user):
+    """Create an API client."""
+
     client = APIClient()
     client.force_authenticate(user=user)
     return client
@@ -38,6 +44,8 @@ def api_client(user):
 
 @pytest.mark.django_db
 def test_sale_list(api_client, sale):
+    """Test sale list."""
+
     url = reverse("sales-list")
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -47,6 +55,8 @@ def test_sale_list(api_client, sale):
 
 @pytest.mark.django_db
 def test_sale_create(api_client):
+    """Test sale create."""
+
     url = reverse("sales-list")
     data = {
         "date": "2022-01-01",
@@ -65,6 +75,8 @@ def test_sale_create(api_client):
 
 @pytest.mark.django_db
 def test_sale_create_no_file(api_client):
+    """Test sale create with no file."""
+
     url = reverse("sales-list")
     data = {
         "date": "2022-01-01",
@@ -79,6 +91,8 @@ def test_sale_create_no_file(api_client):
 
 @pytest.mark.django_db
 def test_sale_detail(api_client, sale):
+    """Test sale detail."""
+
     url = reverse("sale-detail", args=[sale.pk])
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK
@@ -87,6 +101,8 @@ def test_sale_detail(api_client, sale):
 
 @pytest.mark.django_db
 def test_sale_update(api_client, sale):
+    """Test sale update."""
+
     url = reverse("sale-detail", args=[sale.pk])
     data = {"product": "Updated Product"}
     response = api_client.patch(url, data)
@@ -96,6 +112,8 @@ def test_sale_update(api_client, sale):
 
 @pytest.mark.django_db
 def test_sale_delete(api_client, sale):
+    """Test sale delete."""
+
     url = reverse("sale-detail", args=[sale.pk])
     response = api_client.delete(url)
     assert response.status_code == status.HTTP_204_NO_CONTENT
@@ -104,6 +122,8 @@ def test_sale_delete(api_client, sale):
 
 @pytest.mark.django_db
 def test_sale_statistics(api_client, sale):
+    """Test sale statistics."""
+
     url = reverse("sale-statistics")
     response = api_client.get(url)
     assert response.status_code == status.HTTP_200_OK

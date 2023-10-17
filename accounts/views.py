@@ -34,6 +34,8 @@ class LoginView(generics.GenericAPIView):
     serializer_class = TokenSerializer
 
     def post(self, request):
+        """Login a user with email and password."""
+
         email = request.data.get("email")
         password = request.data.get("password")
         user = authenticate(request, email=email, password=password)
@@ -60,6 +62,8 @@ class LogoutView(generics.GenericAPIView):
     serializer_class = CustomLogoutSerializer
 
     def get(self, request):
+        """Logout a user."""
+
         logout(request)
         response = Response(status=status.HTTP_200_OK)
         response.delete_cookie("sessionid")

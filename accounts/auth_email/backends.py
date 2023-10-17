@@ -7,6 +7,8 @@ User = get_user_model()
 
 class EmailBackend(BaseBackend):
     def authenticate(self, request, email=None, password=None, **kwargs):
+        """Authenticate a user based on email address."""
+
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -16,6 +18,8 @@ class EmailBackend(BaseBackend):
         return None
 
     def get_user(self, user_id):
+        """Get a User object from the user_id."""
+
         try:
             return User.objects.get(pk=user_id)
         except User.DoesNotExist:

@@ -21,6 +21,8 @@ class SaleList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def create(self, request):
+        """Create sales from csv file."""
+
         if "file" not in request.FILES:
             return Response(
                 {"error": "File not found"}, status=status.HTTP_400_BAD_REQUEST
@@ -52,6 +54,8 @@ class SaleStatistics(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
+        """Get sale statistics for current user."""
+
         current_user_sales = Sale.objects.filter(user_id=request.user.pk)
         average_sales_for_current_user = (
             current_user_sales

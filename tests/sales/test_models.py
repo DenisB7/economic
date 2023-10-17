@@ -8,6 +8,8 @@ from sales.models import Sale
 
 @pytest.fixture
 def user():
+    """Create a user object."""
+
     return get_user_model().objects.create_user(
         username="testuser", email="testuser@example.com", password="testpass"
     )
@@ -15,6 +17,8 @@ def user():
 
 @pytest.fixture
 def sale(user):
+    """Create a sale object."""
+
     return Sale.objects.create(
         date="2022-01-01",
         product="Test Product",
@@ -26,11 +30,15 @@ def sale(user):
 
 @pytest.mark.django_db
 def test_sale_str(sale):
+    """Test sale string representation."""
+
     assert str(sale) == "Test Product"
 
 
 @pytest.mark.django_db
 def test_sale_model(sale):
+    """Test sale model."""
+
     assert sale.date == "2022-01-01"
     assert sale.product == "Test Product"
     assert sale.sales_number == 10
@@ -40,6 +48,8 @@ def test_sale_model(sale):
 
 @pytest.mark.django_db
 def test_sale_model_date_null():
+    """Test sale model with date null."""
+
     with pytest.raises(IntegrityError):
         Sale.objects.create(
             date=None,
@@ -54,6 +64,8 @@ def test_sale_model_date_null():
 
 @pytest.mark.django_db
 def test_sale_model_product_null():
+    """Test sale model with product null."""
+
     with pytest.raises(IntegrityError):
         Sale.objects.create(
             date="2022-01-01",
@@ -68,6 +80,8 @@ def test_sale_model_product_null():
 
 @pytest.mark.django_db
 def test_sale_model_sales_number_null():
+    """Test sale model with sales_number null."""
+
     with pytest.raises(IntegrityError):
         Sale.objects.create(
             date="2022-01-01",
@@ -82,6 +96,8 @@ def test_sale_model_sales_number_null():
 
 @pytest.mark.django_db
 def test_sale_model_revenue_null():
+    """Test sale model with revenue null."""
+
     with pytest.raises(IntegrityError):
         Sale.objects.create(
             date="2022-01-01",
@@ -96,6 +112,8 @@ def test_sale_model_revenue_null():
 
 @pytest.mark.django_db
 def test_sale_model_user_null():
+    """Test sale model with user null."""
+
     with pytest.raises(IntegrityError):
         Sale.objects.create(
             date="2022-01-01",
