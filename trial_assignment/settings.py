@@ -164,5 +164,5 @@ USER_AGENT = (
 OPENDATASOFT_BASE_URL = "https://public.opendatasoft.com"
 
 # sessions and csrf for production
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
