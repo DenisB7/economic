@@ -18,9 +18,7 @@ class SaleQuerysetMixin:
     def get_queryset(self):
         user = self.request.user
         sales = Sale.objects.filter(user_id=user.pk)
-        if sales:
-            return sales
-        raise PermissionDenied("You are not authorized to view this sales list.")
+        return sales
 
 
 class SaleList(SaleQuerysetMixin, generics.ListCreateAPIView):
