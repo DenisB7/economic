@@ -4,6 +4,7 @@ from decimal import Decimal
 from django.db.models import Avg, Sum, F
 from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,8 +14,16 @@ from sales.models import Sale
 from sales.serializers import SaleSerializer
 
 
-class SaleList(generics.ListCreateAPIView):
-    queryset = Sale.objects.all()
+class SaleQuerysetMixin:
+    def get_queryset(self):
+        user = self.request.user
+        sales = Sale.objects.filter(user_id=user.pk)
+        if sales:
+            return sales
+        raise PermissionDenied("You are not authorized to view this sales list.")
+
+
+class SaleList(SaleQuerysetMixin, generics.ListCreateAPIView):
     serializer_class = SaleSerializer
     parser_classes = (MultiPartParser, FormParser)
     authentication_classes = (SessionAuthentication, BasicAuthentication)
@@ -42,8 +51,7 @@ class SaleList(generics.ListCreateAPIView):
         return Response({"status": "success"}, status=status.HTTP_201_CREATED)
 
 
-class SaleDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Sale.objects.all()
+class SaleDetail(SaleQuerysetMixin, generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SaleSerializer
     authentication_classes = (SessionAuthentication, BasicAuthentication)
     permission_classes = (IsAuthenticated,)
@@ -57,6 +65,8 @@ class SaleStatistics(APIView):
         """Get sale statistics for current user."""
 
         current_user_sales = Sale.objects.filter(user_id=request.user.pk)
+        if not current_user_sales:
+            return Response({"error": "You do not have any sales data."}, status=status.HTTP_404_NOT_FOUND)
         average_sales_for_current_user = (
             current_user_sales
             .aggregate(Avg("revenue"))
