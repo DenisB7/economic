@@ -1,7 +1,7 @@
 import csv
 from decimal import Decimal
 
-from django.db.models import Avg, Sum
+from django.db.models import Avg, Sum, F
 from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -55,15 +55,15 @@ class SaleStatistics(APIView):
         current_user_sales = Sale.objects.filter(user_id=request.user.pk)
         average_sales_for_current_user = (
             current_user_sales
-            .aggregate(Avg("sales_number"))
-            .get("sales_number__avg", 0)
+            .aggregate(Avg("revenue"))
+            .get("revenue__avg", 0)
         )
         average_sale_all_user = (
             Sale
             .objects
             .all()
-            .aggregate(Avg("sales_number"))
-            .get("sales_number__avg", 0)
+            .aggregate(Avg("revenue"))
+            .get("revenue__avg", 0)
         )
         highest_revenue_sale_for_current_user = (
             current_user_sales
@@ -74,14 +74,16 @@ class SaleStatistics(APIView):
         product_highest_revenue_for_current_user = (
             current_user_sales
             .values("product")
-            .annotate(total_revenue=Sum("revenue"))
+            .annotate(total_revenue=Sum("revenue"), total_sales=Sum("sales_number"))
+            .annotate(price=F("total_revenue") / F("total_sales"))
             .order_by("-total_revenue")
             .first()
         )
         product_highest_sales_number_for_current_user = (
             current_user_sales
             .values("product")
-            .annotate(total_sales=Sum("sales_number"))
+            .annotate(total_sales=Sum("sales_number"), total_revenue=Sum("revenue"))
+            .annotate(price=F("total_revenue") / F("total_sales"))
             .order_by("-total_sales")
             .first()
         )
@@ -95,12 +97,14 @@ class SaleStatistics(APIView):
             },
             "product_highest_revenue_for_current_user": {
                 "product_name": product_highest_revenue_for_current_user["product"],
+                "price": product_highest_revenue_for_current_user["price"],
                 "revenue": product_highest_revenue_for_current_user["total_revenue"],
             },
             "product_highest_sales_number_for_current_user": {
                 "product_name": product_highest_sales_number_for_current_user[
                     "product"
                 ],
+                "price": product_highest_sales_number_for_current_user["price"],
                 "sales_number": product_highest_sales_number_for_current_user[
                     "total_sales"
                 ],
