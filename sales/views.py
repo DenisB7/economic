@@ -4,7 +4,6 @@ from decimal import Decimal
 from django.db.models import Avg, Sum, F
 from rest_framework import generics, status
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
